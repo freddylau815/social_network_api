@@ -21,16 +21,23 @@ const userSchema = new Schema({
     },
   },
 
-  thoughts: {
+  thoughts: [{
     type: Schema.Types.ObjectId,
     ref: "Thought",
-  },
+  }],
 
-  friends: {
+  friends: [{
     type: Schema.Types.ObjectId,
     ref: "User",
-  },
+  }],
 });
+
+userSchema.set('toJSON', {
+  transform: (_, user) => {
+    delete user.__v
+    return user
+  }
+})
 
 const User = model('User', userSchema);
 
