@@ -13,15 +13,24 @@ const thoughtSchema = new Schema (
         default: Date.now
         // Use a getter method to format the timestamp on query
     },
-    username: {
-        type: String,
-        required: true
+    user: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'User'
+
     },
     reactions: {
         // Array of nested documents created with the reactionSchema
     }
 }
 )
+
+thoughtSchema.set('toJSON', {
+    transform: (_, thought) => {
+      delete thought.__v
+      return thought
+    }
+  })
 
 const Thought = model('Thought', thoughtSchema);
 

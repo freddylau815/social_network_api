@@ -12,7 +12,7 @@ const userSchema = new Schema({
   email: {
     type: String,
     unique: [true, "User with that email address already exists!"],
-    required: [true, "Please eneter a valid email address!"],
+    required: [true, "Please enter a valid email address!"],
     validate: {
       validator(val) {
         return /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/gi.test(val);
@@ -23,12 +23,12 @@ const userSchema = new Schema({
 
   thoughts: [{
     type: Schema.Types.ObjectId,
-    ref: "Thought",
+    ref: 'Thought',
   }],
 
   friends: [{
     type: Schema.Types.ObjectId,
-    ref: "User",
+    ref: 'User'
   }],
 });
 

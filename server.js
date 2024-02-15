@@ -14,7 +14,7 @@ const { user_routes, thought_routes } = require('./routes/api')
 app.use(express.json())
 
 // Load routes
-app.use('/api', [user_routes])
+app.use('/api', [user_routes, thought_routes])
 
 connection.on('open', () => {
     app.listen(PORT, () => console.log('Server started on port', PORT))

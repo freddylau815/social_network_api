@@ -18,8 +18,8 @@ router.get('/user', async (req, res) => {
     const user_id = req.query.user_id
 
     try {
-        const user = await User.findById(user_id)
-
+        const user = await User.findById(user_id).populate('thoughts', 'thoughtText')
+        console.log('User:', user)
         res.json(user)
 
     } catch (err) {
@@ -30,7 +30,7 @@ router.get('/user', async (req, res) => {
 // GET all users
 router.get('/users', async (req, res) => {
     try {
-        const users = await User.find()
+        const users = await User.find().populate('thoughts', 'thoughtText')
 
         res.json(users)
 
