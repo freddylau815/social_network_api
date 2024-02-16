@@ -29,7 +29,7 @@ router.get('/user-thoughts', async (req, res) => {
     const thought_id = req.query.thought_id
 
     try {
-        const thought = await Thought.findById(thought_id).populate('user', 'username')
+        const thought = await Thought.findById(thought_id).populate('user', 'username').select('-__v')
 
         res.json(thought)
 
@@ -41,7 +41,7 @@ router.get('/user-thoughts', async (req, res) => {
 // GET all users
 router.get('/thoughts', async (req, res) => {
     try {
-        const thoughts = await Thought.find().populate('user', 'username')
+        const thoughts = await Thought.find().populate('user', 'username').select('-__v')
 
         res.json(thoughts)
 
@@ -85,5 +85,49 @@ router.delete('/thoughts', async (req, res) => {
 })
 
 
+// REACTION ROUTES
+
+// POST - add a new reaction to thoughts
+router.post('/thoughts/:thoughtId/reactions', async (req, res) => {
+    const thoughtId = req.params.thoughtId
+
+    const reaction = req.body
+    try {
+        const updatedThought = await Thought.findByIdAndUpdate(thoughtId, {
+            $push: {
+                reactions: reaction,
+
+            }
+        }, { new: true })
+
+        res.json(updatedThought)
+        
+
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+// DELETE a friend
+router.delete('/users/:userId/friends/:friendId', async (req, res) => {
+    const userId = req.params.userId
+    const friendId = req.params.friendId
+
+    const {friends} = req.body
+    try {
+        if (friends) {
+        await User.findByIdAndUpdate(userId, {
+            $pull: {
+                friends: friendId
+            }
+        })
+
+        res.json('Friend has been deleted')
+        }
+
+    } catch (err) {
+        console.log(err)
+    }
+})
 
 module.exports = router

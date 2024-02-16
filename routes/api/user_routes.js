@@ -18,7 +18,7 @@ router.get('/user', async (req, res) => {
     const user_id = req.query.user_id
 
     try {
-        const user = await User.findById(user_id).populate('thoughts', 'thoughtText')
+        const user = await User.findById(user_id).populate('thoughts', 'thoughtText').populate('friends', 'username').select('-__v')
         console.log('User:', user)
         res.json(user)
 
@@ -30,7 +30,7 @@ router.get('/user', async (req, res) => {
 // GET all users
 router.get('/users', async (req, res) => {
     try {
-        const users = await User.find().populate('thoughts', 'thoughtText')
+        const users = await User.find().populate('thoughts', 'thoughtText').populate('friends', 'username').select('-__v')
 
         res.json(users)
 
@@ -78,6 +78,55 @@ router.delete('/user', async (req, res) => {
         const user = await User.findByIdAndDelete(user_id)
 
         res.json('User has been deleted!')
+
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+
+
+// FRIENDS ROUTES
+
+// POST - add a new friend to user's friends
+router.post('/users/:userId/friends/:friendId', async (req, res) => {
+    const userId = req.params.userId
+    const friendId = req.params.friendId
+
+    const {friends} = req.body
+    try {
+        if (friends) {
+        await User.findByIdAndUpdate(userId, {
+            $push: {
+                friends: friendId
+            }
+        })
+        const user = await User.findById(userId).countDocuments('friends')
+
+        res.json(user)
+        }
+
+    } catch (err) {
+        console.log(err)
+    }
+})
+
+// DELETE a friend
+router.delete('/users/:userId/friends/:friendId', async (req, res) => {
+    const userId = req.params.userId
+    const friendId = req.params.friendId
+
+    const {friends} = req.body
+    try {
+        if (friends) {
+        await User.findByIdAndUpdate(userId, {
+            $pull: {
+                friends: friendId
+            }
+        })
+
+        res.json('Friend has been deleted')
+        }
 
     } catch (err) {
         console.log(err)

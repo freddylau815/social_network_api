@@ -30,14 +30,25 @@ const userSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   }],
-});
+},
+{
+  toJSON: { getters: true }
+}
+);
 
-userSchema.set('toJSON', {
-  transform: (_, user) => {
-    delete user.__v
-    return user
+userSchema.virtual('friendCount').get(
+  function() {
+    if (this.friends) return this.friends.length
   }
-})
+)
+
+// userSchema.set('toJSON', {
+//   transform: (_, user) => {
+//     delete user.__v
+//     return user
+//   }
+// })
+
 
 const User = model('User', userSchema);
 
