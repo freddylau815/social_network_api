@@ -108,21 +108,20 @@ router.post('/thoughts/:thoughtId/reactions', async (req, res) => {
     }
 })
 
-// DELETE a friend
-router.delete('/users/:userId/friends/:friendId', async (req, res) => {
-    const userId = req.params.userId
-    const friendId = req.params.friendId
-
-    const {friends} = req.body
+// DELETE a reaction
+router.delete('/thoughts/:thoughtId/reactions/:reactionId', async (req, res) => {
+    const thoughtId = req.params.thoughtId
+    const reactionId = req.params.reaction_id
+    const {reaction} = req.body
     try {
-        if (friends) {
-        await User.findByIdAndUpdate(userId, {
+        if (reaction) {
+        await Thought.findByIdAndUpdate(thoughtId, {
             $pull: {
-                friends: friendId
+                reactions: reactionId
             }
         })
 
-        res.json('Friend has been deleted')
+        res.json('Reaction has been deleted')
         }
 
     } catch (err) {

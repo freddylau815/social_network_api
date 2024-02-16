@@ -92,20 +92,17 @@ router.delete('/user', async (req, res) => {
 router.post('/users/:userId/friends/:friendId', async (req, res) => {
     const userId = req.params.userId
     const friendId = req.params.friendId
-
     const {friends} = req.body
     try {
-        if (friends) {
+
         await User.findByIdAndUpdate(userId, {
             $push: {
                 friends: friendId
             }
         })
-        const user = await User.findById(userId).countDocuments('friends')
-
-        res.json(user)
-        }
-
+        const user = await User.findById(userId)
+        res.json('Friend Added!')
+        
     } catch (err) {
         console.log(err)
     }
